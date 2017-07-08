@@ -45,7 +45,7 @@ public interface MovieService {
      * those wanting more of an "autocomplete" type search, set this option to 'ngram'.
      */
     @GET("search/movie")
-    Observable<MovieResultsPage> movie(
+    Observable<MovieResultsPage> movieSearch(
             @Query("api_key") String apiKey,
             @Query("query") String query,
             @Query("page") Integer page,
@@ -54,6 +54,13 @@ public interface MovieService {
             @Query("year") Integer year,
             @Query("primary_release_year") Integer primaryReleaseYear,
             @Query("search_type") String searchType
+    );
+
+    @GET("search/movie")
+    Observable<MovieResultsPage> movieSearchSimple(
+            @Query("api_key") String apiKey,
+            @Query("query") String query,
+            @Query("page") Integer page
     );
 
     /**

@@ -7,31 +7,29 @@ import com.cfirmo33.moviesapp.MainApplication;
 import com.cfirmo33.moviesapp.R;
 import com.cfirmo33.moviesapp.api.MovieService;
 import com.cfirmo33.moviesapp.api.RetrofitUtils;
-import com.cfirmo33.moviesapp.model.Genre;
 import com.cfirmo33.moviesapp.model.GenreResults;
 import com.cfirmo33.moviesapp.model.MovieResultsPage;
 import com.cfirmo33.moviesapp.ui.contract.MainContract;
+import com.cfirmo33.moviesapp.ui.contract.SearchContract;
 import com.cfirmo33.moviesapp.utils.PaginationScrollListener;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainPresenter extends BasePresenter implements MainContract.IPresenter {
-    private final String TAG = "MainActivity";
-    private final MainContract.IView pcView;
+public class SearchPresenter extends BasePresenter implements SearchContract.IPresenter {
+    private final String TAG = "SearchActivity";
+    private final SearchContract.IView pcView;
     private MovieService movieService;
 
-    public MainPresenter(Context context, MainContract.IView pcView) {
+    public SearchPresenter(Context context, SearchContract.IView pcView) {
         super(context);
         this.pcView = pcView;
         this.pcView.setPresenter(this);
 
         movieService = RetrofitUtils.getRetrofitClient().create(MovieService.class);
-        loadGenres();
     }
 
     @Override
@@ -52,8 +50,8 @@ public class MainPresenter extends BasePresenter implements MainContract.IPresen
      *
      * @param currentPage
      */
-    private Observable<MovieResultsPage> callUpcomingMovies(int currentPage) {
-        return movieService.upcoming(getContext().getString(R.string.my_api_key), "en_US", currentPage);
+    private Observable<MovieResultsPage> callSearchMovies(String searchTerm, int currentPage) {
+        return movieService.movieSearchSimple(getContext().getString(R.string.my_api_key), searchTerm, currentPage);
     }
 
     /**
@@ -63,7 +61,7 @@ public class MainPresenter extends BasePresenter implements MainContract.IPresen
         return movieService.genres(getContext().getString(R.string.my_api_key));
     }
 
-    private void loadGenres() {
+    public void loadGenres() {
         callGenres().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS)
@@ -71,12 +69,12 @@ public class MainPresenter extends BasePresenter implements MainContract.IPresen
                         throwable -> Log.e(TAG, "Erro to load genre"));
     }
 
-    public void loadFirstMoviesPage(int firstPage) {
-        Log.d(TAG, "loadFirstPage: ");
+    public void findMovies(String description, int firstPage) {
+        Log.d(TAG, "loadFirstPage: "+description);
         // To ensure list is visible when retry button in error view is clicked
         pcView.hideErrorView();
 
-        callUpcomingMovies(firstPage)
+        callSearchMovies(description, firstPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS)
@@ -85,10 +83,10 @@ public class MainPresenter extends BasePresenter implements MainContract.IPresen
     }
 
     @Override
-    public void loadNextMoviesPage(int currentPage) {
+    public void findNextMoviesPage(String description, int currentPage) {
         Log.d(TAG, "loadNextPage: " + currentPage);
 
-        callUpcomingMovies(currentPage)
+        callSearchMovies(description, currentPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS)

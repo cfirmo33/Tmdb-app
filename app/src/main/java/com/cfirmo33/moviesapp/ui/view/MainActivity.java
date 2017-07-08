@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -68,10 +71,27 @@ public class MainActivity extends BaseActivity implements PaginationAdapterCallb
         rvMovies.setAdapter(adapter);
         rvMovies.addOnScrollListener(getPaginationScrollListener(linearLayoutManager));
 
-        getPresenter().loadGenres();
         getPresenter().loadFirstMoviesPage(PAGE_START);
 
         btnRetry.setOnClickListener(view -> getPresenter().loadFirstMoviesPage(PAGE_START));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                startActivity(new Intent(this, SearchActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void openMovieDetail(int position, Movie movie) {
@@ -85,7 +105,8 @@ public class MainActivity extends BaseActivity implements PaginationAdapterCallb
     public void populateFirstMovieList(MovieResultsPage movieResultsPage) {
         hideErrorView();
         progressBar.setVisibility(View.GONE);
-        adapter.addAll(movieResultsPage.getResults());
+        adapter.setList(movieResultsPage.getResults());
+        adapter.notifyDataSetChanged();
 
         if (currentPage <= TOTAL_PAGES) adapter.addLoadingFooter();
         else isLastPage = true;

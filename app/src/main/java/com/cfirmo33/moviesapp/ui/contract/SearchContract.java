@@ -3,7 +3,7 @@ package com.cfirmo33.moviesapp.ui.contract;
 import com.cfirmo33.moviesapp.model.MovieResultsPage;
 import com.cfirmo33.moviesapp.ui.presenter.IBasePresenter;
 
-public class MainContract {
+public class SearchContract {
 
     public interface IView extends IBaseView<IPresenter> {
         void hideErrorView();
@@ -16,7 +16,7 @@ public class MainContract {
     }
 
     public interface IPresenter extends IBasePresenter {
-        void loadFirstMoviesPage(int firstPage);
-        void loadNextMoviesPage(int currentPage);
+        void findMovies(String description, int firstPage);
+        void findNextMoviesPage(String description, int currentPage);
     }
 }
