@@ -2,6 +2,7 @@ package com.cfirmo33.moviesapp.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.cfirmo33.moviesapp.utils.PaginationScrollListener;
 import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends BaseActivity implements PaginationAdapterCallback, MainContract.IView {
+    SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager linearLayoutManager;
     PaginationAdapter adapter;
 
@@ -71,6 +73,16 @@ public class MainActivity extends BaseActivity implements PaginationAdapterCallb
         rvMovies.setAdapter(adapter);
         rvMovies.addOnScrollListener(getPaginationScrollListener(linearLayoutManager));
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            getPresenter().loadFirstMoviesPage(PAGE_START);
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         getPresenter().loadFirstMoviesPage(PAGE_START);
 
         btnRetry.setOnClickListener(view -> getPresenter().loadFirstMoviesPage(PAGE_START));
@@ -105,6 +117,7 @@ public class MainActivity extends BaseActivity implements PaginationAdapterCallb
     public void populateFirstMovieList(MovieResultsPage movieResultsPage) {
         hideErrorView();
         progressBar.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
         adapter.setList(movieResultsPage.getResults());
         adapter.notifyDataSetChanged();
 
@@ -136,6 +149,7 @@ public class MainActivity extends BaseActivity implements PaginationAdapterCallb
      */
     public void showErrorView(Throwable throwable) {
         throwable.printStackTrace();
+        swipeRefreshLayout.setRefreshing(false);
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
