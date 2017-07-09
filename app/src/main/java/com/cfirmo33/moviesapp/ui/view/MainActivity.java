@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity implements PaginationAdapterCallb
         super.onCreate(savedInstanceState);
         new MainPresenter(getContext(), this);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setSubtitle(R.string.upcoming_movies);
 
         rvMovies = (RecyclerView) findViewById(R.id.main_recycler);
         progressBar = (ProgressBar) findViewById(R.id.main_progress);

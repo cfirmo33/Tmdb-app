@@ -1,6 +1,11 @@
 # TMDb
 A simple Android client for The Movie DB
 
+## Screenshots
+![Movie List](https://github.com/cfirmo33/TmdbAPP/blob/master/screenshots/movie_list.png)
+![Movie Search](https://github.com/cfirmo33/TmdbAPP/blob/master/screenshots/movie_search.png)
+![Movie Detail](https://github.com/cfirmo33/TmdbAPP/blob/master/screenshots/movie_detail.png)
+
 # APIs
 Filmy is powered by the tmdb.
 https://www.themoviedb.org/
@@ -16,9 +21,9 @@ https://www.themoviedb.org/
 ## The Mission
 In this assignment I had to provide 3 main user features:
 
-- Search for movies
+- Show a list of upcoming movies
 - See details of a movie
-- Open images of a movie
+- Search for movies
 
 ## Architecture
 The application is organized using a simples MVP concept (Model, View, Presenter)
