@@ -103,9 +103,12 @@ public class SearchActivity extends BaseActivity implements PaginationAdapterCal
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchTerm = newText;
-                if (searchTerm.length() >= 2) {
+                if (searchTerm.length() >= 1) {
                     getPresenter().findMovies(searchTerm, currentPage);
                     return true;
+                }else{
+                    adapter.setList(null);
+                    adapter.notifyDataSetChanged();
                 }
                 return false;
             }
